@@ -6,9 +6,9 @@ require('dotenv').config();
 const { SECRET } = process.env;
 
 /* 
-    @route  -> POST api/auth/login
-    @desc   -> Auth user(student, tutor, admin) and get token
-    @access -> Public
+    @route  ->  POST api/auth/login
+    @desc   ->  Auth user(student, tutor, admin) and get token
+    @access ->  Public
 */
 
 exports.loginUser = async(req, res) => {
@@ -73,5 +73,29 @@ exports.loginUser = async(req, res) => {
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');
+    }
+}
+
+/* 
+    @route  ->  GET api/auth
+    @desc   ->  Auth user(student, tutor, admin) and get token
+    @access ->  Private
+*/
+
+exports.getLoggedInUser = async (req, res) => {
+    try {
+        // get user from database
+        const user = await User.findById(req.user.id).select("-password");
+        
+        // return user
+        res.json({
+            statusCode: 200,
+            message: 'User gotten successfully',
+            user
+        });
+        
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error!');
     }
 }
